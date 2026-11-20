@@ -1,0 +1,12 @@
+# Serving-only dependencies for the API image (training extras like mlflow stay out).
+# scikit-learn and xgboost MUST match requirements.txt exactly, or model.joblib may not load.
+
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.4
+pandas==3.1.1
+pyyaml==6.0.3
+joblib==1.6.0
+scikit-learn==1.9.1
+xgboost==3.4.1
+google-cloud-storage==3.17.1
