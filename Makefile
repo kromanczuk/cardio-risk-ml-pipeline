@@ -61,5 +61,6 @@ docker-run-local: docker-build
 #   make docker-train                 (model.type from config.yaml)
 #   make docker-train MODEL=xgboost
 docker-train: docker-build-train
-	docker run --rm --user $$(id -u):$$(id -g) -e HOME=/tmp $(GCLOUD_CREDS) \
+	docker run --rm --user $$(id -u):$$(id -g) -e HOME=/tmp -e USER=$$(whoami) \
+		-e GIT_PYTHON_REFRESH=quiet $(GCLOUD_CREDS) \
 		-v $(PWD):$(PWD) -w $(PWD) $(TRAIN_IMAGE) $(if $(MODEL),--model-type $(MODEL))
