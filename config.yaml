@@ -1,1 +1,15 @@
 # Pipeline config: GCS paths, split ratios, model type + hyperparameters, seed.
+# The bucket can be overridden with the GCS_BUCKET environment variable (see .env.example).
+
+gcs:
+  bucket: REPLACE_WITH_BUCKET_NAME
+  data_path: data/heart_clean.parquet
+
+data:
+  uci_id: 45
+  target: target
+  numeric_features: [age, trestbps, chol, thalach, oldpeak, ca]
+  binary_features: [sex, fbs, exang]
+  categorical_features: [cp, restecg, slope, thal]
+
+# split / model / wandb sections are added in feat/preprocess and feat/train-wandb
