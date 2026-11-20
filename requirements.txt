@@ -9,6 +9,10 @@ google-cloud-storage>=2.18
 
 # --- preprocessing / training (feat/preprocess) ---
 scikit-learn>=1.5
+xgboost>=2.0
+joblib>=1.4
+matplotlib>=3.8
+mlflow>=3.0
 
 # --- dev ---
 pytest>=8.0

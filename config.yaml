@@ -17,4 +17,32 @@ data:
   binary_features: [sex, fbs, exang]
   categorical_features: [cp, restecg, slope, thal]
 
-# split / model / wandb sections are added in feat/preprocess and feat/train-wandb
+seed: 42
+
+split:
+  test_size: 0.15        # fraction of all rows held out for the final test
+  val_size: 0.15         # fraction of all rows used for validation
+  cv_folds: 5            # cross-validation folds on the training set
+
+model:
+  type: logreg           # logreg | random_forest | xgboost  (override: make train MODEL=...)
+  params:
+    logreg:
+      C: 1.0
+      max_iter: 1000
+    random_forest:
+      n_estimators: 300
+      max_depth: 6
+      min_samples_leaf: 2
+    xgboost:
+      n_estimators: 200
+      max_depth: 3
+      learning_rate: 0.05
+      subsample: 0.9
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db   # local; view with `make mlflow-ui`
+  experiment_name: cardio-risk
+
+output:
+  local_dir: artifacts   # model.joblib + metadata.json are written here, then uploaded
