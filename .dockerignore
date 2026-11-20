@@ -1,1 +1,33 @@
-# Keep tests, .git, local data and venvs out of images.
+# Keep the build context small and secrets out of images.
+
+# Secrets
+.env
+.env.*
+
+# Git / CI / editor
+.git
+.github
+.vscode
+.idea
+.DS_Store
+
+# Python
+.venv
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Local outputs (models and data live in GCS)
+mlflow.db
+mlruns/
+mlartifacts/
+artifacts/
+data/
+*.joblib
+*.parquet
+
+# Not needed inside the backend images
+docs/
+tests/
+frontend/
