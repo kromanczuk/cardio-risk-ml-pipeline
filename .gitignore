@@ -1,1 +1,18 @@
-# Ignore .env, data files, model artifacts, caches, venvs.
+# Secrets
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Data and model artifacts (they live in GCS, not git)
+data/*.parquet
+artifacts/
+*.joblib
+
+# Tools / OS
+wandb/
+.DS_Store

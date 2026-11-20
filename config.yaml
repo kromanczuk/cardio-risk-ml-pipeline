@@ -1,9 +1,14 @@
 # Pipeline config: GCS paths, split ratios, model type + hyperparameters, seed.
 # The bucket can be overridden with the GCS_BUCKET environment variable (see .env.example).
 
+gcp:
+  project: heart-mlops
+  region: us-east1
+
 gcs:
-  bucket: REPLACE_WITH_BUCKET_NAME
+  bucket: heart-mlops-data
   data_path: data/heart_clean.parquet
+  models_prefix: models            # models/<version>/ and models/latest/
 
 data:
   uci_id: 45
