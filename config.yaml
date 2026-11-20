@@ -4,6 +4,13 @@
 gcp:
   project: heart-mlops
   region: us-east1
+  artifact_repo: heart-mlops       # Artifact Registry (Docker) repository
+
+# What production serves. To promote a new model, change model_version and redeploy.
+serving:
+  model_version: 20261120-212128-32180821   # logreg, test ROC-AUC 0.944 (MLflow run 32180821)
+  api_service: heart-api
+  api_service_account: heart-api-sa
 
 gcs:
   bucket: heart-mlops-data

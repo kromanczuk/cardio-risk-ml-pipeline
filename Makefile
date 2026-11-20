@@ -1,7 +1,7 @@
 # Shortcuts: make data, train, api, ui, test, deploy.
 
 .PHONY: data train train-all mlflow-ui api test \
-        docker-build docker-build-train docker-run docker-run-local docker-train
+        docker-build docker-build-train docker-run docker-run-local docker-train deploy-api
 
 # Fetch UCI Heart Disease, clean it, upload data/heart_clean.parquet to GCS.
 # Needs `gcloud auth application-default login` and GCS_BUCKET (or gcs.bucket in config.yaml).
@@ -64,3 +64,8 @@ docker-train: docker-build-train
 	docker run --rm --user $$(id -u):$$(id -g) -e HOME=/tmp -e USER=$$(whoami) \
 		-e GIT_PYTHON_REFRESH=quiet $(GCLOUD_CREDS) \
 		-v $(PWD):$(PWD) -w $(PWD) $(TRAIN_IMAGE) $(if $(MODEL),--model-type $(MODEL))
+
+# ---------------------------------------------------------------- Deploy (Cloud Run)
+# Build a linux/amd64 image, push to Artifact Registry, deploy. See deploy/deploy.sh.
+deploy-api:
+	bash deploy/deploy.sh api
