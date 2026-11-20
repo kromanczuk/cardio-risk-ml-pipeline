@@ -1,0 +1,1 @@
+# Runs ruff lint + pytest on every pull request.
