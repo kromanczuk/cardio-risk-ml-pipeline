@@ -10,10 +10,6 @@ google-cloud-storage>=2.18
 # --- preprocessing / training (feat/preprocess) ---
 scikit-learn>=1.5
 
-# --- API (feat/api-schemas) ---
-fastapi>=0.115
-uvicorn[standard]>=0.30
-
 # --- dev ---
 pytest>=8.0
 
