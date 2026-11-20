@@ -15,4 +15,7 @@ artifacts/
 
 # Tools / OS
 wandb/
+mlflow.db
+mlruns/
+mlartifacts/
 .DS_Store
