@@ -33,6 +33,23 @@ REGISTRY="${REGION}-docker.pkg.dev/${PROJECT}/${REPO}"
 TAG="$(git rev-parse --short HEAD)"
 if [[ -n "$(git status --porcelain)" ]]; then TAG="${TAG}-dirty"; fi
 
+# Email of the shared runtime service account; stops with setup instructions if it's missing.
+runtime_service_account() {
+  local name email
+  name="$(cfg serving service_account)"
+  email="${name}@${PROJECT}.iam.gserviceaccount.com"
+  if ! gcloud iam service-accounts describe "$email" --project "$PROJECT" >/dev/null 2>&1; then
+    {
+      echo "Service account ${email} not found. Create it once with:"
+      echo "  gcloud iam service-accounts create ${name} --project ${PROJECT}"
+      echo "  gcloud storage buckets add-iam-policy-binding gs://${BUCKET} \\"
+      echo "    --member=serviceAccount:${email} --role=roles/storage.objectViewer"
+    } >&2
+    exit 1
+  fi
+  echo "$email"
+}
+
 build_and_push() {  # $1 = image name, remaining args = extra docker build args
   local image="${REGISTRY}/$1:${TAG}"; shift
   # Cloud Run runs linux/amd64; this also works on Apple Silicon (emulated build).
@@ -44,7 +61,7 @@ build_and_push() {  # $1 = image name, remaining args = extra docker build args
 deploy_api() {
   local service sa version image
   service="$(cfg serving api_service)"
-  sa="$(cfg serving api_service_account)@${PROJECT}.iam.gserviceaccount.com"
+  sa="$(runtime_service_account)"
   version="${MODEL_VERSION:-$(cfg serving model_version)}"
 
   echo "==> Building API image (tag ${TAG})"
@@ -70,13 +87,7 @@ deploy_api() {
 deploy_ui() {
   local service sa api_url image
   service="$(cfg serving ui_service)"
-  sa="$(cfg serving ui_service_account)@${PROJECT}.iam.gserviceaccount.com"
-
-  if ! gcloud iam service-accounts describe "$sa" --project "$PROJECT" >/dev/null 2>&1; then
-    echo "Service account ${sa} not found. Create it once with:" >&2
-    echo "  gcloud iam service-accounts create $(cfg serving ui_service_account) --project ${PROJECT}" >&2
-    exit 1
-  fi
+  sa="$(runtime_service_account)"
 
   # The UI talks to the deployed API; look up its URL unless API_URL is given.
   api_url="${API_URL:-$(gcloud run services describe "$(cfg serving api_service)" \
