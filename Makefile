@@ -1,6 +1,6 @@
 # Shortcuts: make data, train, api, ui, test, deploy.
 
-.PHONY: data train train-all mlflow-ui api test \
+.PHONY: data train train-all mlflow-ui api test ui compose-up \
         docker-build docker-build-train docker-run docker-run-local docker-train deploy-api
 
 # Fetch UCI Heart Disease, clean it, upload data/heart_clean.parquet to GCS.
@@ -31,6 +31,18 @@ api:
 
 test:
 	pytest
+
+# ---------------------------------------------------------------- UI (local)
+# Streamlit UI at http://127.0.0.1:8501. Point it at any API:
+#   make ui                                               (local API from `make api`)
+#   make ui API_URL=https://heart-api-970173333207.us-east1.run.app
+API_URL ?= http://127.0.0.1:8000
+ui:
+	cd frontend && API_URL=$(API_URL) streamlit run app.py
+
+# API + UI together in Docker (UI at :8501, API at :8080). See docker-compose.yml.
+compose-up:
+	docker compose up --build
 
 # ---------------------------------------------------------------- Docker
 API_IMAGE   ?= heart-api

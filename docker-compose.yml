@@ -1,1 +1,29 @@
-# Runs API + frontend together locally.
+# Runs API + frontend together locally:  docker compose up --build  (or: make compose-up)
+#   UI:  http://127.0.0.1:8501
+#   API: http://127.0.0.1:8080/docs
+# The API loads its model from GCS with your local gcloud login (ADC).
+# Override the model with MODEL_URI, e.g. MODEL_URI=gs://heart-mlops-data/models/<version>.
+
+services:
+  api:
+    build:
+      context: .
+      target: api
+    ports:
+      - "8080:8080"
+    environment:
+      MODEL_URI: ${MODEL_URI:-gs://heart-mlops-data/models/latest}
+      GOOGLE_APPLICATION_CREDENTIALS: /gcloud/application_default_credentials.json
+      GOOGLE_CLOUD_PROJECT: heart-mlops
+    volumes:
+      - ${HOME}/.config/gcloud:/gcloud:ro
+
+  ui:
+    build: ./frontend
+    ports:
+      - "8501:8080"
+    environment:
+      API_URL: http://api:8080   # service name = hostname inside the compose network
+    depends_on:
+      api:
+        condition: service_healthy   # waits for the API image's HEALTHCHECK
