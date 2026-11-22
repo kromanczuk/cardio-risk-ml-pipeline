@@ -10,7 +10,9 @@ gcp:
 serving:
   model_version: 20261120-212128-32180821   # logreg, test ROC-AUC 0.944 (MLflow run 32180821)
   api_service: heart-api
-  api_service_account: heart-api-sa
+  api_service_account: heart-api-sa        # read-only access to the bucket
+  ui_service: heart-ui
+  ui_service_account: heart-ui-sa          # no permissions: the UI only calls the public API
 
 gcs:
   bucket: heart-mlops-data
