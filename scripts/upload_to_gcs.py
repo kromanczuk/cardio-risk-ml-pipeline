@@ -9,6 +9,7 @@ Usage:
 
 Requires `gcloud auth application-default login` for the upload step.
 """
+
 import argparse
 import sys
 import tempfile
@@ -18,7 +19,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.config import feature_columns, load_config  # noqa: E402
+from src.config import feature_columns, load_config
 
 
 def fetch_raw(uci_id: int) -> pd.DataFrame:
@@ -31,8 +32,22 @@ def fetch_raw(uci_id: int) -> pd.DataFrame:
 
 def read_raw_file(path: str) -> pd.DataFrame:
     """Read UCI's `processed.cleveland.data` (no header, '?' for missing values)."""
-    uci_order = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
-                 "thalach", "exang", "oldpeak", "slope", "ca", "thal", "num"]
+    uci_order = [
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal",
+        "num",
+    ]
     return pd.read_csv(path, header=None, names=uci_order, na_values="?")
 
 
@@ -46,11 +61,11 @@ def clean(raw: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         raise ValueError(f"Raw data is missing columns: {sorted(missing)}")
 
     df = raw[features + ["num"]].copy()
-    df = df.replace("?", pd.NA)                     # older copies of the file use '?'
+    df = df.replace("?", pd.NA)  # older copies of the file use '?'
     df[features] = df[features].apply(pd.to_numeric)
-    df = df.dropna().reset_index(drop=True)         # ~6 rows with missing ca/thal
+    df = df.dropna().reset_index(drop=True)  # ~6 rows with missing ca/thal
 
-    df[target] = (df["num"] > 0).astype(int)        # 0 = no disease, 1-4 = disease
+    df[target] = (df["num"] > 0).astype(int)  # 0 = no disease, 1-4 = disease
     df = df.drop(columns=["num"])
 
     # Whole-number columns back to int (NaNs forced them to float).
@@ -69,8 +84,11 @@ def upload(local_path: str, bucket: str, blob: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--local", metavar="PATH", help="save parquet here and skip the upload")
-    parser.add_argument("--raw-file", metavar="PATH",
-                        help="use a downloaded processed.cleveland.data instead of fetching from UCI")
+    parser.add_argument(
+        "--raw-file",
+        metavar="PATH",
+        help="use a downloaded processed.cleveland.data instead of fetching from UCI",
+    )
     args = parser.parse_args()
 
     cfg = load_config()

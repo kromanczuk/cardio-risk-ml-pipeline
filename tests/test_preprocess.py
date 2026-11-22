@@ -1,5 +1,6 @@
 # Tests for the preprocessing pipeline.
 """Tests for src/preprocess.py. They use a small hand-made table: no GCS, no W&B."""
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -18,25 +19,40 @@ N_ONE_HOT = sum(len(v) for v in CATEGORY_VALUES.values())  # 13
 def sample_df() -> pd.DataFrame:
     rng = np.random.default_rng(0)
     n = 40
-    df = pd.DataFrame({
-        "age": rng.integers(29, 78, n),
-        "trestbps": rng.integers(94, 200, n),
-        "chol": rng.integers(126, 564, n),
-        "thalach": rng.integers(71, 202, n),
-        "oldpeak": rng.uniform(0, 6.2, n).round(1),
-        "ca": rng.integers(0, 4, n),
-        "sex": rng.integers(0, 2, n),
-        "fbs": rng.integers(0, 2, n),
-        "exang": rng.integers(0, 2, n),
-    })
+    df = pd.DataFrame(
+        {
+            "age": rng.integers(29, 78, n),
+            "trestbps": rng.integers(94, 200, n),
+            "chol": rng.integers(126, 564, n),
+            "thalach": rng.integers(71, 202, n),
+            "oldpeak": rng.uniform(0, 6.2, n).round(1),
+            "ca": rng.integers(0, 4, n),
+            "sex": rng.integers(0, 2, n),
+            "fbs": rng.integers(0, 2, n),
+            "exang": rng.integers(0, 2, n),
+        }
+    )
     for col, values in CATEGORY_VALUES.items():
         df[col] = np.resize(values, n)  # cycle through every value
     return df
 
 
 def test_config_lists_the_13_contract_features():
-    expected = {"age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
-                "thalach", "exang", "oldpeak", "slope", "ca", "thal"}
+    expected = {
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal",
+    }
     cols = feature_columns(CFG)
     assert set(cols) == expected
     assert len(cols) == len(set(cols)) == 13
@@ -59,7 +75,7 @@ def test_numeric_columns_are_scaled(sample_df):
 
 def test_binary_columns_pass_through_unchanged(sample_df):
     out = build_preprocessor(CFG).fit_transform(sample_df)
-    binary = out[:, -len(CFG["data"]["binary_features"]):]
+    binary = out[:, -len(CFG["data"]["binary_features"]) :]
     np.testing.assert_array_equal(binary, sample_df[CFG["data"]["binary_features"]].to_numpy())
 
 

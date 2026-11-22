@@ -8,6 +8,7 @@ Pipeline (see src/train.py), so the API can pass raw feature values straight in.
     categorical  -> OneHotEncoder (unseen values are ignored, not an error)
     binary       -> passed through unchanged (already 0/1)
 """
+
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
@@ -21,8 +22,11 @@ def build_preprocessor(cfg: dict | None = None) -> ColumnTransformer:
     return ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), d["numeric_features"]),
-            ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False),
-             d["categorical_features"]),
+            (
+                "cat",
+                OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                d["categorical_features"],
+            ),
             ("bin", "passthrough", d["binary_features"]),
         ],
         remainder="drop",  # ignore any extra columns the caller sends
