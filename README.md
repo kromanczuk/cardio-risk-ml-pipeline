@@ -271,16 +271,6 @@ Inputs are validated (ranges such as `age` 18–100, allowed UCI codes, no extra
 `422` with the offending field. If no model could be loaded the API still starts, `/health`
 reports `model_loaded: false` and `/predict` returns `503`, so the front-end can say so clearly.
 
-## Security
-
-- The data bucket is private (public access prevention); only the runtime account
-  (read-only) and the team can read it.
-- Both services run as a dedicated least-privilege account, not the default compute account.
-- CI stores no keys (Workload Identity Federation, `main` only).
-- The public API validates all input and is capped at 2 instances to bound cost.
-- *Next step for production:* IAM authentication between UI and API. We kept the API public
-  because a publicly reachable `/predict` is a project requirement.
-
 <details>
 <summary><b>Repository layout</b></summary>
 
@@ -305,10 +295,3 @@ reports `model_loaded: false` and `/predict` returns `503`, so the front-end can
 ```
 
 </details>
-
-## Team
-
-| Member | Responsibilities |
-|---|---|
-| Sabrina Grewal Requena | Data ingestion and cleaning, preprocessing, training pipeline, MLflow tracking |
-| Kuba Romanczuk | GCP, API, Docker, CI/CD, front-end, Cloud Run deployment, documentation |
