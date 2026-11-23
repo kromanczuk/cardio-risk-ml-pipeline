@@ -1,1 +1,4 @@
-# Frontend-only deps: streamlit, requests.
+# Frontend-only dependencies (the UI never imports the ML code).
+streamlit==1.67.0
+plotly==7.1.0
+requests==2.34.2
