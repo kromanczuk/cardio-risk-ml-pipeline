@@ -100,6 +100,7 @@ def main() -> None:
     print(f"Target counts (0 = no disease, 1 = disease): {counts}")
 
     if args.local:
+        Path(args.local).parent.mkdir(parents=True, exist_ok=True)
         df.to_parquet(args.local, index=False)
         print(f"Saved {args.local} (no upload)")
         return

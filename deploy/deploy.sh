@@ -30,8 +30,10 @@ MODELS_PREFIX="$(cfg gcs models_prefix)"
 REGISTRY="${REGION}-docker.pkg.dev/${PROJECT}/${REPO}"
 
 # Tag images with the git commit, so every deployed image traces back to the code.
+# "-dirty" = uncommitted changes to tracked files. Untracked files are ignored: in CI the
+# auth step writes a temporary credentials file into the checkout.
 TAG="$(git rev-parse --short HEAD)"
-if [[ -n "$(git status --porcelain)" ]]; then TAG="${TAG}-dirty"; fi
+if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then TAG="${TAG}-dirty"; fi
 
 # Email of the shared runtime service account; stops with setup instructions if it's missing.
 runtime_service_account() {
