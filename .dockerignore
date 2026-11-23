@@ -3,6 +3,8 @@
 # Secrets
 .env
 .env.*
+# Temporary credentials written by google-github-actions/auth in CI
+gha-creds-*.json
 
 # Git / CI / editor
 .git
