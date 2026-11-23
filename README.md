@@ -17,7 +17,7 @@ end-to-end, reproducible ML system on Google Cloud.
 **Contents:** [Overview](#overview) · [Architecture](#architecture) · [Dataset](#dataset) ·
 [Model and evaluation](#model-and-evaluation) · [Cloud services](#cloud-services) ·
 [Quickstart](#quickstart) · [Usage](#usage) · [Deploy](#deploy-to-google-cloud) ·
-[CI/CD](#cicd) · [API reference](#api-reference) · [Security](#security) · [Team](#team)
+[CI/CD](#cicd) · [API reference](#api-reference)
 
 ## Overview
 
