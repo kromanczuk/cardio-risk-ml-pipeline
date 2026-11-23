@@ -1,6 +1,6 @@
 # Shortcuts: make data, train, api, ui, test, deploy.
 
-.PHONY: data train train-all mlflow-ui api test ui compose-up \
+.PHONY: data train train-all mlflow-ui api test lint format ui compose-up \
         docker-build docker-build-train docker-run docker-run-local docker-train deploy-api deploy-ui
 
 # Fetch UCI Heart Disease, clean it, upload data/heart_clean.parquet to GCS.
@@ -31,6 +31,15 @@ api:
 
 test:
 	pytest
+
+# Same checks as CI. `make format` fixes what it can.
+lint:
+	ruff check .
+	ruff format --check .
+
+format:
+	ruff check --fix .
+	ruff format .
 
 # ---------------------------------------------------------------- UI (local)
 # Streamlit UI at http://127.0.0.1:8501. Point it at any API:

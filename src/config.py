@@ -6,6 +6,7 @@ Usage:
     cfg = load_config()
     cfg["gcs"]["bucket"]
 """
+
 import os
 from pathlib import Path
 

@@ -6,6 +6,7 @@ Usage:
     df = load_data()                 # downloads gs://<bucket>/data/heart_clean.parquet
     df = load_data(local_path="x.parquet")   # skip GCS, e.g. for tests
 """
+
 import tempfile
 from pathlib import Path
 
@@ -30,8 +31,9 @@ def load_data(cfg: dict | None = None, local_path: str | None = None) -> pd.Data
         df = pd.read_parquet(local_path)
     else:
         with tempfile.TemporaryDirectory() as tmp:
-            path = download_from_gcs(cfg["gcs"]["bucket"], cfg["gcs"]["data_path"],
-                                     Path(tmp) / "heart_clean.parquet")
+            path = download_from_gcs(
+                cfg["gcs"]["bucket"], cfg["gcs"]["data_path"], Path(tmp) / "heart_clean.parquet"
+            )
             df = pd.read_parquet(path)
 
     expected = feature_columns(cfg) + [cfg["data"]["target"]]
