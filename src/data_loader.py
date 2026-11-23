@@ -5,6 +5,8 @@ Usage:
     from src.data_loader import load_data
     df = load_data()                 # downloads gs://<bucket>/data/heart_clean.parquet
     df = load_data(local_path="x.parquet")   # skip GCS, e.g. for tests
+
+    python -m src.data_loader            # download to data/heart_clean.parquet
 """
 
 import tempfile
@@ -41,3 +43,12 @@ def load_data(cfg: dict | None = None, local_path: str | None = None) -> pd.Data
     if missing:
         raise ValueError(f"Data is missing expected columns: {sorted(missing)}")
     return df[expected]
+
+
+if __name__ == "__main__":
+    cfg = load_config()
+    dest = download_from_gcs(
+        cfg["gcs"]["bucket"], cfg["gcs"]["data_path"], "data/heart_clean.parquet"
+    )
+    df = pd.read_parquet(dest)
+    print(f"Downloaded gs://{cfg['gcs']['bucket']}/{cfg['gcs']['data_path']} -> {dest} {df.shape}")

@@ -1,12 +1,16 @@
 # Shortcuts: make data, train, api, ui, test, deploy.
 
-.PHONY: data train train-all mlflow-ui api test lint format ui compose-up \
+.PHONY: data download train train-all mlflow-ui api test lint format ui compose-up \
         docker-build docker-build-train docker-run docker-run-local docker-train deploy-api deploy-ui
 
 # Fetch UCI Heart Disease, clean it, upload data/heart_clean.parquet to GCS.
 # Needs `gcloud auth application-default login` and GCS_BUCKET (or gcs.bucket in config.yaml).
 data:
 	python scripts/upload_to_gcs.py
+
+# Download the cleaned dataset from GCS to data/heart_clean.parquet (training does this itself).
+download:
+	python -m src.data_loader
 
 # Train one model, log it to MLflow, upload model.joblib + metadata.json to GCS.
 #   make train                       (model.type from config.yaml)

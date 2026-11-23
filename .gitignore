@@ -19,3 +19,6 @@ mlflow.db
 mlruns/
 mlartifacts/
 .DS_Store
+
+# Local editor / assistant settings
+.claude/
